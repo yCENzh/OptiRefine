@@ -5,6 +5,7 @@
 name: Build Test Artifact
 
 on:
+  workflow_dispatch:
   push:
   pull_request:
 
