@@ -5,7 +5,13 @@ import mods.Hileb.optirefine.library.cursedmixinextensions.annotations.ChangeSup
 import mods.Hileb.optirefine.library.cursedmixinextensions.annotations.Public;
 import mods.Hileb.optirefine.optifine.Config;
 import mods.Hileb.optirefine.optifine.client.GameSettingsOptionOF;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.GuiListExtended;
+import net.minecraft.client.gui.GuiOptionButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiVideoSettings;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.GameSettings;
 import net.optifine.Lang;
@@ -33,7 +39,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @SuppressWarnings("all")
 @Mixin(GuiVideoSettings.class)
 @ChangeSuperClass(GuiScreenOF.class)
-public abstract class MixinGuiVideoSettings extends GuiScreen {
+public class MixinGuiVideoSettings extends GuiScreen {
     @Shadow
     @Final
     private GuiScreen parentGuiScreen;
@@ -227,12 +233,7 @@ public abstract class MixinGuiVideoSettings extends GuiScreen {
     @Unique
     @Public
     public static String getGuiChatText(GuiChat guiChat) {
-        return _acc_GuiChatAccessor_getInputField(guiChat).getText();
-    }
-
-    @AccessibleOperation(opcode = Opcodes.INVOKEVIRTUAL, desc = "net.minecraft.client.gui.GuiTextField field_146415_a Lnet.minecraft.client.gui.GuiTextField")
-    private static GuiTextField _acc_GuiChatAccessor_getInputField(GuiChat guiChat) {
-        throw new AbstractMethodError();
+        return ((GuiChatAccessor)guiChat).getInputField().getText();
     }
 
 }

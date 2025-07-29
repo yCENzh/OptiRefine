@@ -10,19 +10,15 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(BlockStateBase.class)
 public abstract class MixinBlockStateBase implements IBlockState {
-
     @Unique
     @SuppressWarnings("all")
     private int blockId = -1;
-
     @Unique
     @SuppressWarnings("all")
     private int blockStateId = -1;
-
     @Unique
     @SuppressWarnings("all")
     private int metadata = -1;
-
     @Unique
     @SuppressWarnings("all")
     private ResourceLocation blockLocation = null;

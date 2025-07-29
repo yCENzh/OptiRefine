@@ -26,7 +26,6 @@
 package mods.Hileb.optirefine.library.foundationx;
 
 import mods.Hileb.optirefine.library.foundationx.mini.MiniUtils;
-import net.minecraft.launchwrapper.Launch;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;

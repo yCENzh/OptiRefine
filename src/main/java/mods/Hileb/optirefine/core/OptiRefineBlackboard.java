@@ -6,18 +6,14 @@ import java.util.HashSet;
 
 public class OptiRefineBlackboard {
     public static final HashSet<String> CLASSES = Sets.newHashSet(
-            "net.minecraft.block.material.MapColor",
-            // Optifine -> make ‘colorValue’ not final -> accessTransformer
-            "net.minecraft.block.state.BlockStateBase",
-            // Optifine -> add new field and methods -> mixin
-            "net.minecraft.block.state.BlockStateBase$1",
-            "net.minecraft.block.state.BlockStateContainer",
-            // Optifine -> redirected a construction -> skip
-            "net.minecraft.block.state.BlockStateContainer$1",
+            "net.minecraft.block.material.MapColor", // Optifine -> remove final -> at
+            "net.minecraft.block.state.BlockStateBase", // Optifine -> add new field and methods -> mixin
+            "net.minecraft.block.state.BlockStateBase$1", // Optifine -> final -> skip
+            "net.minecraft.block.state.BlockStateContainer", // Optifine -> redirected a construction -> skip
+            "net.minecraft.block.state.BlockStateContainer$1", // Optifine -> final -> skip
             "net.minecraft.block.state.BlockStateContainer$Builder",
             "net.minecraft.block.state.BlockStateContainer$StateImplementation", // Optifine -> add new field and methods -> very bad -> skip
-            "net.minecraft.block.BlockAir",
-            // Optifine -> add new field and methods -> mixin
+            "net.minecraft.block.BlockAir", // Optifine -> add new field and methods -> mixin
             "net.minecraft.client.LoadingScreenRenderer", // Optifine -> customGUI -> mixin FMLClientHandler
             "net.minecraft.client.entity.AbstractClientPlayer", // Optifine -> Capes -> mixin
             "net.minecraft.client.gui.FontRenderer", // Optifine -> custom font colors -> mixin
@@ -49,31 +45,10 @@ public class OptiRefineBlackboard {
             "net.minecraft.client.particle.ParticleManager$3",
             "net.minecraft.client.particle.ParticleManager$4",
 
-            "net.minecraft.client.renderer.texture.AbstractTexture",
-            "net.minecraft.client.renderer.texture.DynamicTexture",
-            "net.minecraft.client.renderer.texture.DynamicTexture",
-
-            "net.minecraft.client.renderer.tileentity.TileEntitySignRenderer",
-            "net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer",
-            "net.minecraft.client.renderer.vertex.DefaultVertexFormats",
-            "net.minecraft.client.renderer.vertex.VertexBuffer",
-            "net.minecraft.client.render.BlockFluidRenderer",
-            "net.minecraft.client.render.BlockModelRender",
-            "net.minecraft.client.render.BlockModelRender$$AmbientOcclusionFace",
-            "net.minecraft.client.render.BlockModelRender$EnumNeighborInfo",
-            "net.minecraft.client.render.BlockModelRender$Orientation",
-            "net.minecraft.client.render.BlockModelRender$VertexTranslations",
-            "net.minecraft.client.render.BufferBuilder",
-            "net.minecraft.client.render.BufferBuilder$1",
-            "net.minecraft.client.render.BufferBuilder$2",
-            "net.minecraft.client.render.BufferBuilder$State",
-            "net.minecraft.client.render.ChunkRenderContainer",
-
-            "net.minecraft.client.renderer.ImageBufferDownload",
-
             "net.minecraft.client.resources.AbstractResourcePack", // Optifine : access -> ignored
             "net.minecraft.client.resources.DefaultResourcePack", //
             "net.minecraft.client.resources.I18n",
+
             "net.minecraft.client.resources.ResourcePackRepository$1",
             "net.minecraft.client.resources.ResourcePackRepository$2",
             "net.minecraft.client.resources.ResourcePackRepository$3",
@@ -81,7 +56,9 @@ public class OptiRefineBlackboard {
             "net.minecraft.client.settings.GameSettings$1",
             "net.minecraft.client.settings.GameSettings$2",
             "net.minecraft.client.settings.GameSettings$Options",
-            "net.minecraft.client.LoadingScreenRenderer",
+
+
+
             "net.minecraft.crash.CrashReport",
             "net.minecraft.crash.CrashReport$1",
             "net.minecraft.crash.CrashReport$2",
@@ -100,35 +77,8 @@ public class OptiRefineBlackboard {
             "net.minecraft.potion.PotionUtils",
             "net.minecraft.profiler.Profiler",
             "net.minecraft.profiler.Profiler$Result",
-            "net.minecraft.server.integrated.IntegratedServer",
-            "net.minecraft.server.integrated.IntegratedServer$1",
-            "net.minecraft.server.integrated.IntegratedServer$2",
-            "net.minecraft.server.integrated.IntegratedServer$3",
-            "net.minecraft.server.management.PlayerChunkMap",
-            "net.minecraft.server.management.PlayerChunkMap$1",
-            "net.minecraft.server.management.PlayerChunkMap$2",
-            "net.minecraft.server.management.PlayerChunkMap$3",
-            "net.minecraft.server.management.PlayerChunkMap$4",
-            "net.minecraft.server.management.PlayerChunkMap$5",
-            "net.minecraft.util.math.ChunkPos",
-            "net.minecraft.util.math.MathHelper",
-            "net.minecraft.util.text.translation.I18n",
-            "net.minecraft.util.ClassInheritanceMultiMap",
-            "net.minecraft.util.ClassInheritanceMultiMap$1",
-            "net.minecraft.util.EnumFacing",
-            "net.minecraft.util.EnumFacing$1",
-            "net.minecraft.util.EnumFacing$Axis",
-            "net.minecraft.util.EnumFacing$AxisDirection",
-            "net.minecraft.util.EnumFacing$Plane",
-            "net.minecraft.util.IntegerCache",
 
-            "net.minecraft.util.Util",
-            "net.minecraft.util.Util$EnumOS",
-            "net.minecraft.world.GameRules",
-            "net.minecraft.world.GameRules$Value",
-            "net.minecraft.world.GameRules$ValueType",
-            "net.minecraft.world.gen.layer.GenLayerZoom",
-            "net.minecraft.world.chunk.BlockStateContainer",
-            "net.minecraft.world.chunk.storage.ExtendedBlockStorage"
+
+            "net.minecraft.util.math.ChunkPos"
     );
 }

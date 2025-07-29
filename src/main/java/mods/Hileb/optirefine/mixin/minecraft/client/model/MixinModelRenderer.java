@@ -32,7 +32,7 @@ import java.util.List;
 
 @SuppressWarnings("all")
 @Mixin(ModelRenderer.class)
-public abstract class MixinModelRenderer {
+public class MixinModelRenderer {
     @Shadow
     public float textureWidth;
     @Shadow

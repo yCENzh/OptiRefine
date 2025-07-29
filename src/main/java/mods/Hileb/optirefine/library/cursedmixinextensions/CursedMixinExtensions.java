@@ -19,8 +19,8 @@ import java.util.*;
 public class CursedMixinExtensions {
     public static void postApply(ClassNode targetClass) {
         LinkedList<CallTransformTask> tasks = new LinkedList<>();
-
         AnnotationNode changeSuperClass = Annotations.getVisible(targetClass, ChangeSuperClass.class);
+
         if (changeSuperClass != null) {
             String oldOwner = targetClass.superName;
             targetClass.superName = Annotations.<Type>getValue(changeSuperClass).getInternalName();
@@ -31,36 +31,13 @@ public class CursedMixinExtensions {
             });
         }
 
-        AnnotationNode implementsItf = Annotations.getVisible(targetClass, Implements.class);
-        if (implementsItf != null) {
-            ListIterator<Object> iterator = implementsItf.values.listIterator();
-            while (iterator.hasNext()) {
-                Object current = iterator.next();
-                if ("value".equals(current)) {
-                    for (Type type : (List<Type>) iterator.next()) {
-                        if (!targetClass.interfaces.contains(type.getClassName())) {
-                            targetClass.interfaces.add(type.getClassName());
-                        }
-                    }
-                } else if ("itfs".equals(current)) {
-                    for (String type : (List<String>) iterator.next()) {
-                        type = type.replace('.', '/');
-                        if (!targetClass.interfaces.contains(type)) {
-                            targetClass.interfaces.add(type);
-                        }
-                    }
-                }
-            }
-        }
-
         List<String> ctrToReplace = new ArrayList<>();
 
         for (ListIterator<MethodNode> it = targetClass.methods.listIterator(); it.hasNext(); ) {
             MethodNode method = it.next();
-            boolean remove = false;
 
             if (Annotations.getVisible(method, ShadowSuperConstructor.class) != null) {
-                remove = true;
+                it.remove();
                 tasks.add((instructions, call) -> {
                     if (call.name.equals(method.name) && call.desc.equals(method.desc)) {
                         call.setOpcode(Opcodes.INVOKESPECIAL);
@@ -68,22 +45,24 @@ public class CursedMixinExtensions {
                         call.owner = targetClass.superName;
                     }
                 });
+                continue;
             }
 
             if (Annotations.getVisible(method, ShadowConstructor.class) != null) {
-                remove = true;
+                it.remove();
                 tasks.add((instructions, call) -> {
                     if (call.name.equals(method.name) && call.desc.equals(method.desc)) {
                         call.setOpcode(Opcodes.INVOKESPECIAL);
                         call.name = "<init>";
                     }
                 });
+                continue;
             }
 
             AnnotationNode superMethod = Annotations.getVisible(method, ShadowSuper.class);
 
             if (superMethod != null) {
-                remove = true;
+                it.remove();
                 String targetName = Annotations.getValue(superMethod);
 
                 tasks.add((instructions, call) -> {
@@ -94,6 +73,7 @@ public class CursedMixinExtensions {
                     }
                 });
 
+                continue;
             }
 
             if (Annotations.getVisible(method, Public.class) != null) {
@@ -122,47 +102,8 @@ public class CursedMixinExtensions {
                 method.name = "<init>";
             }
 
-            if (Annotations.getVisible(method, AccessTransformer.class) != null) {
-                remove = true;
-                int access = -1;
-                String name = null;
-                boolean deobf = false;
-                ListIterator<Object> iterator = Annotations.getVisible(method, AccessibleOperation.class).values.listIterator();
-                while (iterator.hasNext()) {
-                    Object current = iterator.next();
-                    if ("access".equals(current)) {
-                        access = (Integer) iterator.next();
-                    } else if ("name".equals(current)) {
-                        name = (String) iterator.next();
-                    } else if ("deobf".equals(current)) {
-                        deobf = (Boolean) iterator.next();
-                    }
-                }
-
-                if ("<class>".equals(name)) {
-                    targetClass.access = access;
-                    remove = true;
-                } else {
-                    String desc = method.desc;
-                    if (access == -1) access = method.access;
-                    if (name == null) name = method.name;
-
-                    if (deobf) {
-                        name = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(targetClass.name, name, desc);
-                        desc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(desc);
-                    }
-
-                    for (MethodNode mn : targetClass.methods) {
-                        if (mn.name.equals(name) && mn.desc.equals(desc)) {
-                            mn.access = access;
-                        }
-                    }
-                }
-
-            }
-
             if (Annotations.getVisible(method, AccessibleOperation.class) != null) {
-                remove = true;
+                it.remove();
                 int opcodes = 0;
                 String desc = null;
                 boolean itf = false;
@@ -288,10 +229,6 @@ public class CursedMixinExtensions {
                     }
                 }
             }
-
-            if (remove) {
-                it.remove();
-            }
         }
 
         if (!ctrToReplace.isEmpty()) {
@@ -306,46 +243,10 @@ public class CursedMixinExtensions {
             }
         }
 
-        Iterator<FieldNode> fieldNodeIterator = targetClass.fields.iterator();
-        while (fieldNodeIterator.hasNext()){
-            FieldNode field = fieldNodeIterator.next();
-
+        for (FieldNode field : targetClass.fields) {
             if (Annotations.getVisible(field, Public.class) != null) {
                 field.access |= Opcodes.ACC_PUBLIC;
                 field.access &= ~(Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED);
-            }
-            if (Annotations.getVisible(field, AccessTransformer.class) != null) {
-                fieldNodeIterator.remove();
-                int access = -1;
-                String name = null;
-                boolean deobf = false;
-                ListIterator<Object> iterator = Annotations.getVisible(field, AccessibleOperation.class).values.listIterator();
-                while (iterator.hasNext()) {
-                    Object current = iterator.next();
-                    if ("access".equals(current)) {
-                        access = (Integer) iterator.next();
-                    } else if ("name".equals(current)) {
-                        name = (String) iterator.next();
-                    } else if ("deobf".equals(current)) {
-                        deobf = (Boolean) iterator.next();
-                    }
-                }
-
-                String desc = field.desc;
-                if (access == -1) access = field.access;
-                if (name == null) name = field.name;
-
-                if(deobf) {
-                    name = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(targetClass.name, name, desc);
-                    desc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(desc);
-                }
-
-                for (FieldNode mn : targetClass.fields) {
-                    if(mn.name.equals(name) && mn.desc.equals(desc)) {
-                        mn.access = access;
-                    }
-                }
-
             }
         }
 

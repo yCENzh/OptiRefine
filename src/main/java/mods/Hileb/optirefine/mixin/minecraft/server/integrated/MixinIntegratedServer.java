@@ -33,6 +33,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.File;
 import java.net.Proxy;
+import java.util.Arrays;
+import java.util.List;
 
 @Mixin(IntegratedServer.class)
 public abstract class MixinIntegratedServer extends MinecraftServer {
